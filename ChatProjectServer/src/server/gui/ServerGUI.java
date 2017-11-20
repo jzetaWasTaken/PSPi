@@ -1,14 +1,13 @@
-package gui;
+package server.gui;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.DefaultCaret;
-
+import server.control.Manager;
 import javax.swing.JTextArea;
 import javax.swing.JButton;
-
 import java.awt.EventQueue;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -18,7 +17,8 @@ public class ServerGUI extends JFrame implements ActionListener {
 	private static final long serialVersionUID = 1L;
 	private JTextArea textArea;
 	private JButton btnExit;
-
+	private Manager manager;
+	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {

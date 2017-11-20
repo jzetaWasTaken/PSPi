@@ -1,4 +1,4 @@
-package gui;
+package client.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,6 +9,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.DefaultCaret;
+
+import client.control.Manager;
 
 import javax.swing.JTextField;
 import javax.swing.JButton;
@@ -21,6 +23,8 @@ public class ClientGUI extends JFrame implements ActionListener {
 	private JTextArea textArea;
 	private JButton btnSend;
 	private JButton btnExit;
+	private String nickName;
+	private Manager manager;
 
 	public ClientGUI() {
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);

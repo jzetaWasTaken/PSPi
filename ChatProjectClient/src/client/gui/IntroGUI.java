@@ -1,10 +1,12 @@
-package gui;
+package client.gui;
 
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import client.control.Manager;
 
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -20,6 +22,7 @@ public class IntroGUI extends JFrame implements ActionListener {
 	private JTextField textNickName;
 	private JLabel lblError;
 	private JButton btnAccept;
+	private Manager manager;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
