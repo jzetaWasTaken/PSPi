@@ -20,11 +20,16 @@ public class ServerThread extends Thread {
 
 	@Override
 	public void run() {
+		ObjectOutputStream output = null;
 		try {
 			server = new ServerSocket(PORT);
 			while (true) {
 				Socket socket = server.accept();
 				ClientThread client = new ClientThread(socket, textArea);
+				client.start();
+				output = (ObjectOutputStream) socket.getOutputStream();
+				// output.writeObject(new Message());
+				// TODO seguir aquí
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

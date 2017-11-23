@@ -1,4 +1,4 @@
-package model;
+package server.model;
 
 public class Message {
 	private String nickName;
@@ -11,7 +11,8 @@ public class Message {
 	}
 	
 	public Message(String nickName, String text) {
-		
+		this.nickName = nickName;
+		this.text = text;
 	}
 	
 	public String getNickName() {

@@ -9,14 +9,18 @@ import javax.swing.border.EmptyBorder;
 import client.control.Manager;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.UnknownHostException;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
+import java.awt.Component;
 
-public class IntroGUI extends JFrame implements ActionListener {
+public class IntroGUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JTextField textNickName;
@@ -66,10 +70,27 @@ public class IntroGUI extends JFrame implements ActionListener {
 		lblError.setBounds(43, 60, 167, 14);
 		contentPane.add(lblError);
 
-		btnAccept.addActionListener(this);
-	}
-
-	public void actionPerformed(ActionEvent event) {
-		
+		btnAccept.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				if (!textNickName.getText().trim().equals("")) {
+					try {
+						manager.connect(textNickName.getText());
+						ClientGUI clientGui = new ClientGUI(textNickName.getText(), manager);
+						clientGui.setTitle(textNickName.getText());
+						clientGui.setVisible(true);
+						Component c = (Component) event.getSource();
+						JOptionPane.getFrameForComponent(c).dispose();
+					} catch (UnknownHostException e) {
+						e.printStackTrace();
+					} catch (IOException e) {
+						e.printStackTrace();
+					} 
+				} else {
+					// TODO error message
+				}
+			}
+		});
 	}
 }

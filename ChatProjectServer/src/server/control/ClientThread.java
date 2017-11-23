@@ -7,7 +7,7 @@ import java.net.Socket;
 
 import javax.swing.JTextArea;
 
-import model.Message;
+import server.model.Message;
 
 public class ClientThread extends Thread {
 	private Socket socket;
@@ -18,6 +18,9 @@ public class ClientThread extends Thread {
 	public ClientThread(Socket socket, JTextArea textArea) {
 		this.socket = socket;
 		this.textArea = textArea;
+		
+		// TODO check if nickname exists
+		
 		try {
 			input = (ObjectInputStream) socket.getInputStream();
 			Message message = (Message) input.readObject();
@@ -26,6 +29,12 @@ public class ClientThread extends Thread {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
+		} finally {
+			try {
+				input.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
