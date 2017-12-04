@@ -39,6 +39,6 @@ public class Message implements Serializable {
 	
 	@Override
 	public String toString() {
-		return nickName + ": " + text;
+		return nickName + ": " + text + "\n";
 	}
 }

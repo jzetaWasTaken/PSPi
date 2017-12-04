@@ -25,9 +25,8 @@ public class ServerThread extends Thread {
 			server = new ServerSocket(PORT);
 			while (true) {
 				Socket socket = server.accept();
-				textArea.append(socket.getInetAddress().getHostName());
+				//textArea.append(socket.getInetAddress().getHostName());
 				ClientThread client = new ClientThread(socket, textArea);
-				
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

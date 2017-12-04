@@ -19,7 +19,6 @@ public class ClientThread extends Thread {
 		this.socket = socket;
 		this.textArea = textArea;
 		
-		
 		// TODO check if nickname exists
 		
 		try {
@@ -28,6 +27,7 @@ public class ClientThread extends Thread {
 			Message message = (Message) input.readObject();
 			textArea.append(message.toString());
 			ServerThread.clients.put(message.getNickName(), this);
+			reSendAll(message);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
@@ -44,7 +44,7 @@ public class ClientThread extends Thread {
 				else {
 					Message message = (Message) input.readObject();
 					reSendAll(message);
-					textArea.setText(message.toString());
+					textArea.append(message.toString());
 				}
 			}
 		} catch (IOException | ClassNotFoundException e) {

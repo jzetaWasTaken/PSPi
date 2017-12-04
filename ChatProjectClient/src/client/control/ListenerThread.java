@@ -31,7 +31,7 @@ public class ListenerThread extends Thread {
 	public void run() {
 		try {
 			while (true) {
-				textArea.setText(((Message)input.readObject()).toString());
+				textArea.append(((Message)input.readObject()).toString());
 			}
 		} catch (IOException e) {
 			// TODO handle error. Inform user
