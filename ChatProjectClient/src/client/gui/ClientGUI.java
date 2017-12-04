@@ -1,21 +1,17 @@
 package client.gui;
 
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Random;
-
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.DefaultCaret;
-
 import client.control.Manager;
-import client.model.Message;
+import model.Message;
 
 import javax.swing.JTextField;
 import javax.swing.JButton;
@@ -76,6 +72,7 @@ public class ClientGUI extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				manager.sendMessage(new Message(CLIENT_GUI.nickName,textField.getText()));
+				textField.setText(null);
 			}
 		});
 		btnExit.addActionListener(new ActionListener() {
@@ -101,6 +98,7 @@ public class ClientGUI extends JFrame {
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					manager.sendMessage(new Message(CLIENT_GUI.nickName,textField.getText()));
+					textField.setText(null);
 				}
 			}
 		});

@@ -16,20 +16,18 @@ public class ServerThread extends Thread {
 	
 	public ServerThread(JTextArea textArea) {
 		this.textArea = textArea;
+		start();
 	}
 
 	@Override
 	public void run() {
-		ObjectOutputStream output = null;
 		try {
 			server = new ServerSocket(PORT);
 			while (true) {
 				Socket socket = server.accept();
+				textArea.append(socket.getInetAddress().getHostName());
 				ClientThread client = new ClientThread(socket, textArea);
-				client.start();
-				output = (ObjectOutputStream) socket.getOutputStream();
-				// output.writeObject(new Message());
-				// TODO seguir aquí
+				
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

@@ -6,7 +6,8 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import javax.swing.JButton;
 import javax.swing.JTextArea;
-import client.model.Message;
+
+import model.Message;
 
 public class Manager {
 	public static final int PORT = 5100;
@@ -16,12 +17,11 @@ public class Manager {
 	ListenerThread listener;
 	
 	public void startCommunication(String nickName, JTextArea textArea, JButton btnSend) {
-		new ListenerThread(socket, textArea, btnSend).start();
+		new ListenerThread(socket, textArea, btnSend);
 	}
 	
 	public void sendMessage(Message message) {
 		try {
-			output = (ObjectOutputStream) socket.getOutputStream();
 			output.writeObject(message);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -30,10 +30,11 @@ public class Manager {
 	
 	public void connect(String nickName) throws UnknownHostException, IOException  {
 		socket = new Socket(HOST, PORT);
+		output = new ObjectOutputStream(socket.getOutputStream());
 		sendMessage(new Message(nickName, Message.HELLO_MSG));
 	}
 	
 	public void disconnect(String nickName) {
-		
+		sendMessage(new Message(nickName, Message.BYE_MSG));
 	}
 }

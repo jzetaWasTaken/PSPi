@@ -6,10 +6,10 @@ public class Manager {
 	private ServerThread server;
 	
 	public void startCommunication(JTextArea textArea) {
-		
+		server = new ServerThread(textArea);
 	}
 	
 	public void disconnect() {
-		
+		// TODO
 	}
 }

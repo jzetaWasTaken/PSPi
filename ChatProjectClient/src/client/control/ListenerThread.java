@@ -6,6 +6,8 @@ import java.net.Socket;
 import javax.swing.JButton;
 import javax.swing.JTextArea;
 
+import model.Message;
+
 public class ListenerThread extends Thread {
 	ObjectInputStream input = null;
 	JTextArea textArea;
@@ -16,14 +18,20 @@ public class ListenerThread extends Thread {
 		this.socket = socket;
 		this.textArea = textArea;
 		this.btnSend = btnSend;
+		try {
+			this.input = new ObjectInputStream(socket.getInputStream());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		start();
 	}
 
 	@Override
 	public void run() {
 		try {
-			input = (ObjectInputStream) socket.getInputStream();
 			while (true) {
-				textArea.setText(input.readObject().toString());
+				textArea.setText(((Message)input.readObject()).toString());
 			}
 		} catch (IOException e) {
 			// TODO handle error. Inform user
@@ -33,7 +41,7 @@ public class ListenerThread extends Thread {
 			e.printStackTrace();
 		} finally {
 			try {
-				input.close();
+				if (input != null) input.close();	
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

@@ -12,12 +12,12 @@ import java.awt.EventQueue;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class ServerGUI extends JFrame implements ActionListener {
+public class ServerGUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JTextArea textArea;
 	private JButton btnExit;
-	private Manager manager;
+	private Manager manager = new Manager();
 	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -54,12 +54,15 @@ public class ServerGUI extends JFrame implements ActionListener {
 		contentPane.add(scroll);
 
 		btnExit = new JButton("Exit");
-		btnExit.addActionListener(this);
 		btnExit.setBounds(181, 232, 89, 23);
 		contentPane.add(btnExit);
-	}
-
-	public void actionPerformed(ActionEvent event) {
-		
+		btnExit.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				manager.disconnect();
+			}
+		});
+		this.manager.startCommunication(textArea);
 	}
 }

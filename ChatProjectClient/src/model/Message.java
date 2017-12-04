@@ -1,6 +1,12 @@
-package client.model;
+package model;
 
-public class Message {
+import java.io.Serializable;
+
+public class Message implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String nickName;
 	private String text;
 	public static final String HELLO_MSG = "HELLO";
@@ -11,7 +17,8 @@ public class Message {
 	}
 
 	public Message(String nickName, String text) {
-		
+		this.nickName = nickName;
+		this.text = text;
 	}
 	
 	public String getNickName() {

@@ -26,7 +26,7 @@ public class IntroGUI extends JFrame {
 	private JTextField textNickName;
 	private JLabel lblError;
 	private JButton btnAccept;
-	private Manager manager;
+	private Manager manager = new Manager();
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
