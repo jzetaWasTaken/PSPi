@@ -7,6 +7,8 @@ public class Message implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	public final static String DISCON_MSG = "Server disconnected";
+	public final static String SERVER_NICK = "SERVER";
 	private String nickName;
 	private String text;
 	public static final String HELLO_MSG = "HELLO";

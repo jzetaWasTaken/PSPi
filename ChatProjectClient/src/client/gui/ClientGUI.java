@@ -79,7 +79,8 @@ public class ClientGUI extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
+				manager.disconnect(nickName);
+				CLIENT_GUI.dispose();
 			}
 		});
 		textField.addKeyListener(new KeyListener() {

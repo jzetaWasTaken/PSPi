@@ -10,6 +10,6 @@ public class Manager {
 	}
 	
 	public void disconnect() {
-		// TODO
+		server.disconnect();
 	}
 }

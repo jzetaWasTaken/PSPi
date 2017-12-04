@@ -3,6 +3,8 @@ package client.control;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
+import java.net.SocketException;
+
 import javax.swing.JButton;
 import javax.swing.JTextArea;
 
@@ -31,21 +33,26 @@ public class ListenerThread extends Thread {
 	public void run() {
 		try {
 			while (true) {
-				textArea.append(((Message)input.readObject()).toString());
+				Message message = (Message) input.readObject();
+				textArea.append(message.toString());
+				if (message.getText().equals(Message.DISCON_MSG)) {
+					break;
+				}
 			}
+		} catch (SocketException e) {
+			// Socket closed thread ends
 		} catch (IOException e) {
-			// TODO handle error. Inform user
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} finally {
+		}  finally {
+			btnSend.setEnabled(false);
 			try {
 				if (input != null) input.close();	
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
 		}
 	}
 }

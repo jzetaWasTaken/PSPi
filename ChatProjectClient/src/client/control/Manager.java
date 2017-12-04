@@ -36,5 +36,13 @@ public class Manager {
 	
 	public void disconnect(String nickName) {
 		sendMessage(new Message(nickName, Message.BYE_MSG));
+			try {
+				if (output != null)
+					output.close();
+				if (socket != null) 
+					socket.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 	}
 }

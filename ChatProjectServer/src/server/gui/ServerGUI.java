@@ -18,6 +18,7 @@ public class ServerGUI extends JFrame {
 	private JTextArea textArea;
 	private JButton btnExit;
 	private Manager manager = new Manager();
+	private final ServerGUI SERVER_GUI = this;
 	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -61,6 +62,7 @@ public class ServerGUI extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				manager.disconnect();
+				SERVER_GUI.dispose();
 			}
 		});
 		this.manager.startCommunication(textArea);

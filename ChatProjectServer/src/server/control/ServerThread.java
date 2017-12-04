@@ -1,13 +1,15 @@
 package server.control;
 
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.swing.JTextArea;
 
+import model.Message;
+
 public class ServerThread extends Thread {
+	
 	public final static int PORT = 5100;
 	private ServerSocket server = null;
 	static ConcurrentHashMap<String, ClientThread> clients = 
@@ -25,7 +27,6 @@ public class ServerThread extends Thread {
 			server = new ServerSocket(PORT);
 			while (true) {
 				Socket socket = server.accept();
-				//textArea.append(socket.getInetAddress().getHostName());
 				ClientThread client = new ClientThread(socket, textArea);
 			}
 		} catch (IOException e) {
@@ -41,6 +42,16 @@ public class ServerThread extends Thread {
 	}
 	
 	public void disconnect() {
-		
+		Message message = new Message(Message.SERVER_NICK, Message.DISCON_MSG);
+		for (ClientThread client : ServerThread.clients.values()) {
+			client.sendMessage(message);
+			client.disconnect();
+		}
+		try {
+			if (server != null)
+				server.close();
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 	}
 }

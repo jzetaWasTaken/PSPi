@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.SocketException;
 
 import javax.swing.JTextArea;
 
@@ -43,13 +44,21 @@ public class ClientThread extends Thread {
 				if (input == null) System.out.println("Input null");
 				else {
 					Message message = (Message) input.readObject();
+					if (message.getText().equals(Message.BYE_MSG)) {
+						ServerThread.clients.remove(message.getNickName());
+						reSendAll(message);
+						break;
+					}
 					reSendAll(message);
 					textArea.append(message.toString());
 				}
 			}
+		} catch (SocketException e) {
+			
 		} catch (IOException | ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			disconnect();
 		}
 	}
 
@@ -57,7 +66,6 @@ public class ClientThread extends Thread {
 		try {
 			output.writeObject(message);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -69,6 +77,15 @@ public class ClientThread extends Thread {
 	}
 	
 	public void disconnect() {
-		
+		try {
+			if (output != null)
+				output.close();
+			if (input != null)
+				input.close();
+			if (socket != null)
+				socket.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
