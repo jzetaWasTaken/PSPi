@@ -4,6 +4,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.IOException;
+import java.net.SocketException;
 import java.util.Random;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -70,9 +72,15 @@ public class ClientGUI extends JFrame {
 		btnSend.addActionListener(new ActionListener() {
 			
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent event) {
 				if (!textField.getText().trim().equals("")) {
-					manager.sendMessage(new Message(CLIENT_GUI.nickName,textField.getText()));
+						try {
+							manager.sendMessage(new Message(CLIENT_GUI.nickName,textField.getText()));
+						} catch (SocketException e) {
+							
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
 					textField.setText(null);
 				}
 			}
@@ -80,9 +88,16 @@ public class ClientGUI extends JFrame {
 		btnExit.addActionListener(new ActionListener() {
 			
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				manager.disconnect(nickName);
-				CLIENT_GUI.dispose();
+			public void actionPerformed(ActionEvent event) {
+				try {
+					manager.disconnect(nickName);
+				} catch (SocketException e) {
+					
+				} catch (IOException e) {
+					e.printStackTrace();
+				} finally {
+					CLIENT_GUI.dispose();
+				}
 			}
 		});
 		textField.addKeyListener(new KeyListener() {
@@ -98,16 +113,26 @@ public class ClientGUI extends JFrame {
 			}
 			
 			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+			public void keyPressed(KeyEvent event) {
+				if (event.getKeyCode() == KeyEvent.VK_ENTER) {
 					if (!textField.getText().trim().equals("")) {
-						manager.sendMessage(new Message(CLIENT_GUI.nickName,textField.getText()));
+						try {
+							manager.sendMessage(new Message(CLIENT_GUI.nickName,textField.getText()));
+						} catch (SocketException e) {
+							
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
 						textField.setText(null);
 					}
 				}
 			}
 		});
 		
-		this.manager.startCommunication(this.nickName, this.textArea, this.btnSend);
+		try {
+			this.manager.startCommunication(this.nickName, this.textArea, this.btnSend);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
 	}
 }
