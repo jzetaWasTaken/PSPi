@@ -16,14 +16,14 @@ public class ListenerThread extends Thread {
 	JButton btnSend;
 	Socket socket = null;
 
-	ListenerThread(Socket socket, JTextArea textArea, JButton btnSend) {
+	ListenerThread(Socket socket, String nickName, JTextArea textArea, JButton btnSend) {
+		this.setName(nickName);
 		this.socket = socket;
 		this.textArea = textArea;
 		this.btnSend = btnSend;
 		try {
 			this.input = new ObjectInputStream(socket.getInputStream());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		start();

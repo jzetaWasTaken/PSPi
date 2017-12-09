@@ -17,7 +17,7 @@ public class Manager {
 	ListenerThread listener;
 	
 	public void startCommunication(String nickName, JTextArea textArea, JButton btnSend) {
-		new ListenerThread(socket, textArea, btnSend);
+		new ListenerThread(socket,nickName, textArea, btnSend);
 	}
 	
 	public void sendMessage(Message message) {

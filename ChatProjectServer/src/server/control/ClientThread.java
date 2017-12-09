@@ -45,6 +45,7 @@ public class ClientThread extends Thread {
 				else {
 					Message message = (Message) input.readObject();
 					if (message.getText().equals(Message.BYE_MSG)) {
+						textArea.append(message.toString());
 						ServerThread.clients.remove(message.getNickName());
 						reSendAll(message);
 						break;

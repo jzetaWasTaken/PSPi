@@ -15,6 +15,7 @@ import javax.swing.JButton;
 
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.UnknownHostException;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
@@ -23,6 +24,8 @@ import java.awt.Component;
 public class IntroGUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
+	private static final String ERROR_MSG = "Enter nick name first";
+	private static final String SERVER_ERROR_MSG = "Server not responding";
 	private JTextField textNickName;
 	private JLabel lblError;
 	private JButton btnAccept;
@@ -82,13 +85,15 @@ public class IntroGUI extends JFrame {
 						clientGui.setVisible(true);
 						Component c = (Component) event.getSource();
 						JOptionPane.getFrameForComponent(c).dispose();
+					} catch (ConnectException e) {
+						lblError.setText(SERVER_ERROR_MSG);
 					} catch (UnknownHostException e) {
 						e.printStackTrace();
 					} catch (IOException e) {
 						e.printStackTrace();
 					} 
 				} else {
-					// TODO error message
+					lblError.setText(ERROR_MSG);
 				}
 			}
 		});

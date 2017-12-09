@@ -71,8 +71,10 @@ public class ClientGUI extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				manager.sendMessage(new Message(CLIENT_GUI.nickName,textField.getText()));
-				textField.setText(null);
+				if (!textField.getText().trim().equals("")) {
+					manager.sendMessage(new Message(CLIENT_GUI.nickName,textField.getText()));
+					textField.setText(null);
+				}
 			}
 		});
 		btnExit.addActionListener(new ActionListener() {
@@ -98,8 +100,10 @@ public class ClientGUI extends JFrame {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					manager.sendMessage(new Message(CLIENT_GUI.nickName,textField.getText()));
-					textField.setText(null);
+					if (!textField.getText().trim().equals("")) {
+						manager.sendMessage(new Message(CLIENT_GUI.nickName,textField.getText()));
+						textField.setText(null);
+					}
 				}
 			}
 		});

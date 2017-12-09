@@ -3,6 +3,7 @@ package server.control;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.swing.JTextArea;
 
@@ -29,6 +30,8 @@ public class ServerThread extends Thread {
 				Socket socket = server.accept();
 				ClientThread client = new ClientThread(socket, textArea);
 			}
+		} catch (SocketException e) {
+			// 
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
