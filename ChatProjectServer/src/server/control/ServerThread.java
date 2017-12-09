@@ -34,6 +34,8 @@ public class ServerThread extends Thread {
 			// 
 		} catch (IOException e) {
 			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
 		} finally {
 			if (server != null)
 				try {
@@ -44,17 +46,13 @@ public class ServerThread extends Thread {
 		}
 	}
 	
-	public void disconnect() {
+	public void disconnect() throws IOException {
 		Message message = new Message(Message.SERVER_NICK, Message.DISCON_MSG);
 		for (ClientThread client : ServerThread.clients.values()) {
 			client.sendMessage(message);
 			client.disconnect();
 		}
-		try {
-			if (server != null)
-				server.close();
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
+		if (server != null)
+			server.close();
 	}
 }
