@@ -1,5 +1,7 @@
 package server.control;
 
+import java.io.IOException;
+
 import javax.swing.JTextArea;
 
 public class Manager {
@@ -9,7 +11,7 @@ public class Manager {
 		server = new ServerThread(textArea);
 	}
 	
-	public void disconnect() {
+	public void disconnect() throws IOException {
 		server.disconnect();
 	}
 }

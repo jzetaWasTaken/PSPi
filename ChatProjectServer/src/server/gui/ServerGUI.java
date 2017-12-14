@@ -10,6 +10,7 @@ import javax.swing.JTextArea;
 import javax.swing.JButton;
 import java.awt.EventQueue;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.awt.event.ActionEvent;
 
 public class ServerGUI extends JFrame {
@@ -60,8 +61,12 @@ public class ServerGUI extends JFrame {
 		btnExit.addActionListener(new ActionListener() {
 			
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				manager.disconnect();
+			public void actionPerformed(ActionEvent event) {
+				try {
+					manager.disconnect();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 				SERVER_GUI.dispose();
 			}
 		});
