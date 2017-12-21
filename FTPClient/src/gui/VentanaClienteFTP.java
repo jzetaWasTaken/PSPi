@@ -12,7 +12,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -63,7 +62,7 @@ public class VentanaClienteFTP extends JFrame implements ActionListener, MouseLi
 	 * Create the frame.
 	 */
 	public VentanaClienteFTP() {
-		super("CLIENTE B�SICO FTP");
+		super("CLIENTE BÁSICO FTP");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 430, 482);
 		JPanel contentPane = new JPanel();
