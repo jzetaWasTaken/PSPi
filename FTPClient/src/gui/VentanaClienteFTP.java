@@ -5,18 +5,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import javax.swing.DefaultListModel;
-import javax.swing.JFileChooser;
+
+import exceptions.FTPLoginException;
+import manager.Manager;
+
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -24,8 +21,6 @@ import javax.swing.JButton;
 import javax.swing.JPasswordField;
 import javax.swing.JList;
 import javax.swing.ListSelectionModel;
-
-
 import java.awt.Color;
 
 public class VentanaClienteFTP extends JFrame implements ActionListener, MouseListener {
@@ -41,6 +36,7 @@ public class VentanaClienteFTP extends JFrame implements ActionListener, MouseLi
 	private JLabel label1;
 	private JLabel label2;
 	private JList<String> lista;
+	private Manager manager = new Manager(lista);
 
 	/**
 	 * Launch the application.
@@ -83,7 +79,7 @@ public class VentanaClienteFTP extends JFrame implements ActionListener, MouseLi
 		contentPane.add(tServidor);
 		tServidor.setColumns(10);
 
-		tUsuario = new JTextField("usu1");
+		tUsuario = new JTextField();
 		tUsuario.setBounds(75, 13, 86, 20);
 		contentPane.add(tUsuario);
 		tUsuario.setColumns(10);
@@ -141,35 +137,75 @@ public class VentanaClienteFTP extends JFrame implements ActionListener, MouseLi
 	public void actionPerformed(ActionEvent e) {
 		JButton boton = (JButton) e.getSource();
 		if (boton == btnConectar) {
+			try {
+				manager.startConnection(tUsuario.getText(), new String(tClave.getPassword()));
+			} catch (IOException e1) {
+				e1.printStackTrace();
+				// TODO: handle exception
+			} catch (FTPLoginException e1) {
+				e1.printStackTrace();
+				// TODO: handle exception
+			}
 			
 		} else if (boton == btnSubir) {
-			
-
+			try {
+				manager.uploadFile();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+				// TODO Manage error
+			}
 		} else if (boton == btnDescargar) {
-			
-
+			try {
+				manager.downloadFile();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+				// TODO Manage error
+			}
 		} else if (boton == btnSalir) {
-			
+			try {
+				manager.exitServer();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+				// TODO Manage error
+			}
+		}
+	}
+	
+	public void mouseClicked(MouseEvent e) {
+		JList<String> list = (JList<String>) e.getSource();
+		if (e.getClickCount() == 2) {
+			int index = list.getSelectedIndex();
+			if (index == 0) {
+				try {
+					manager.selectListFirstElement(list.getSelectedValue());
+				} catch (IOException e1) {
+					e1.printStackTrace();
+					// TODO Manage error
+				}
+			} else {
+				try {
+					manager.selectListElement(list.getSelectedValue());
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
 		}
 	}
 
-	
-
-	
-	
-	public void mouseClicked(MouseEvent e) {
+	public void mouseEntered(MouseEvent e) {
 		
 	}
 
-	public void mouseEntered(MouseEvent e) {
-	}
-
 	public void mouseExited(MouseEvent e) {
+		
 	}
 
 	public void mousePressed(MouseEvent e) {
+		
 	}
 
 	public void mouseReleased(MouseEvent e) {
+		
 	}
 }
