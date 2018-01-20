@@ -23,6 +23,7 @@ public class ServerThread extends Thread {
 	}
 
 	@Override
+	@SuppressWarnings("unused")
 	public void run() {
 		try {
 			server = new ServerSocket(PORT);
