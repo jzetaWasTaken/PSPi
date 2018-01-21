@@ -97,17 +97,17 @@ public class ServerThread extends Thread {
 	 * clients, it disconnects the clients and it closes the server socket.
 	 * 
 	 * @throws IOException
-	 * 			if an input/output operation is interrupted.
-	 */			
+	 *             if an input/output operation is interrupted.
+	 */
 	public void disconnect() throws IOException {
 		// Create disconnection message.
 		Message message = new Message(Message.SERVER_NICK, Message.DISCON_MSG);
-		
+
 		// Loop through all the clients.
 		for (ClientThread client : ServerThread.clients.values()) {
 			// Send the disconnection message.
 			client.sendMessage(message);
-			
+
 			// Disconnect the client.
 			client.disconnect();
 		}

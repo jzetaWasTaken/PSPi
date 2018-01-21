@@ -19,13 +19,13 @@ import model.Message;
  */
 public class ListenerThread extends Thread {
 	/**
-	 * <code>ObjectInputStream</code> instance to read messages coming from
-	 * the server.
+	 * <code>ObjectInputStream</code> instance to read messages coming from the
+	 * server.
 	 */
 	ObjectInputStream input = null;
 	/**
-	 * Text area of the graphical user interface to append messages coming
-	 * from the server.
+	 * Text area of the graphical user interface to append messages coming from the
+	 * server.
 	 */
 	JTextArea textArea;
 	/**
@@ -38,16 +38,20 @@ public class ListenerThread extends Thread {
 	Socket socket = null;
 
 	/**
-	 * Constructs a new <code>ListenerThread</code> class instance and initializes 
+	 * Constructs a new <code>ListenerThread</code> class instance and initializes
 	 * all its fields.
 	 * 
-	 * @param socket	socket to communicate with the server.
-	 * @param nickName	user's nickname to register the thread's name.
-	 * @param textArea	text area from the graphical user interface.
-	 * @param btnSend	button to send messages.
+	 * @param socket
+	 *            socket to communicate with the server.
+	 * @param nickName
+	 *            user's nickname to register the thread's name.
+	 * @param textArea
+	 *            text area from the graphical user interface.
+	 * @param btnSend
+	 *            button to send messages.
 	 * @throws IOException
-	 * 			if there is an input/output issue when initializing
-	 * 			the <code>ObjectInputStream</code>.
+	 *             if there is an input/output issue when initializing the
+	 *             <code>ObjectInputStream</code>.
 	 */
 	ListenerThread(Socket socket, String nickName, JTextArea textArea, JButton btnSend) throws IOException {
 		this.setName(nickName);
@@ -60,15 +64,15 @@ public class ListenerThread extends Thread {
 
 	/**
 	 * The main thread execution instructions. The program will read incoming
-	 * messages and append them to the text area until it receives a 
-	 * disconnection message from the server or an exception is raised.
+	 * messages and append them to the text area until it receives a disconnection
+	 * message from the server or an exception is raised.
 	 * 
 	 * @exception SocketException
-	 * 				if there is an error accessing the socket.
+	 *                if there is an error accessing the socket.
 	 * @exception IOException
-	 * 				if an input/output operation is interrupted.
+	 *                if an input/output operation is interrupted.
 	 * @exception ClassNotFoundException
-	 * 				if an issue raises when trying to load a class.
+	 *                if an issue raises when trying to load a class.
 	 */
 	@Override
 	public void run() {
@@ -77,10 +81,10 @@ public class ListenerThread extends Thread {
 			while (true) {
 				// Read message.
 				Message message = (Message) input.readObject();
-				
+
 				// Append new message to graphical user interface text area.
 				textArea.append(message.toString());
-				
+
 				// If server disconnects, break the reading loop to exit.
 				if (message.getText().equals(Message.DISCON_MSG)) {
 					break;

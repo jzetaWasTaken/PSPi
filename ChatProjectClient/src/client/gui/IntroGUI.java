@@ -28,6 +28,7 @@ public class IntroGUI extends JFrame {
 
 	/**
 	 * A unique serial version identifier.
+	 * 
 	 * @see java.io.Serializable
 	 */
 	private static final long serialVersionUID = 1L;
@@ -88,7 +89,7 @@ public class IntroGUI extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		
+
 		// Set the label for the nickname text field.
 		JLabel lblNickText = new JLabel("Enter your nickname:");
 		lblNickText.setBounds(44, 11, 166, 14);
@@ -113,12 +114,11 @@ public class IntroGUI extends JFrame {
 
 		// Accept button's action listener.
 		btnAccept.addActionListener(new ActionListener() {
-			
+
 			/**
-			 * Get's the nickname and calls the manager's method to connect to
-			 * the server. If it succeeds, disposes the current window and 
-			 * starts the chat's main window. If there is an error, it displays
-			 * a message in the error label.
+			 * Get's the nickname and calls the manager's method to connect to the server.
+			 * If it succeeds, disposes the current window and starts the chat's main
+			 * window. If there is an error, it displays a message in the error label.
 			 */
 			@Override
 			public void actionPerformed(ActionEvent event) {
@@ -126,12 +126,12 @@ public class IntroGUI extends JFrame {
 					try {
 						// Call manager's method to connect to the server.
 						manager.connect(textNickName.getText());
-						
+
 						// Create main window.
 						ClientGUI clientGui = new ClientGUI(textNickName.getText(), manager);
 						clientGui.setTitle(textNickName.getText());
 						clientGui.setVisible(true);
-						
+
 						// Close login window.
 						Component c = (Component) event.getSource();
 						JOptionPane.getFrameForComponent(c).dispose();
@@ -142,7 +142,7 @@ public class IntroGUI extends JFrame {
 						e.printStackTrace();
 					} catch (IOException e) {
 						e.printStackTrace();
-					} 
+					}
 				} else {
 					// Display error message if no nickname has been typed.
 					lblError.setText(ERROR_MSG);

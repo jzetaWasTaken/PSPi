@@ -1,18 +1,20 @@
 package model;
 
 import java.io.Serializable;
+
 /**
- * A class representing the messages to send to the server and
- * to receive from the server.
+ * A class representing the messages to send to the server and to receive from
+ * the server.
  * 
  * @author Jon Zaballa
  * @version 1.0
  * @see java.io.Serializable
  */
 public class Message implements Serializable {
-	
+
 	/**
 	 * A unique serial version identifier.
+	 * 
 	 * @see java.io.Serializable
 	 */
 	private static final long serialVersionUID = 1L;
@@ -40,29 +42,30 @@ public class Message implements Serializable {
 	 * String constant for the message when connection ends.
 	 */
 	public static final String BYE_MSG = "BYE";
-	
+
 	/**
 	 * Constructs a new <code>Message</code> object.
 	 */
 	public Message() {
-		
+
 	}
 
 	/**
-	 * Constructs a new <code>Message</code> object and
-	 * initializes <code>nickName</code> and 
-	 * <code>text</code> fields.
+	 * Constructs a new <code>Message</code> object and initializes
+	 * <code>nickName</code> and <code>text</code> fields.
 	 * 
-	 * @param user nickname.
-	 * @param message body text.
+	 * @param user
+	 *            nickname.
+	 * @param message
+	 *            body text.
 	 */
 	public Message(String nickName, String text) {
 		this.nickName = nickName;
 		this.text = text;
 	}
-	
+
 	/**
-	 * Returns the nickname of a given message. 
+	 * Returns the nickname of a given message.
 	 * 
 	 * @return the message's nickname.
 	 */
@@ -73,8 +76,8 @@ public class Message implements Serializable {
 	/**
 	 * Register's the nickname of the message.
 	 * 
-	 * @param nickName 	the nickname to be displayed
-	 * 					along with the message.
+	 * @param nickName
+	 *            the nickname to be displayed along with the message.
 	 */
 	public void setNickName(String nickName) {
 		this.nickName = nickName;
@@ -92,12 +95,13 @@ public class Message implements Serializable {
 	/**
 	 * Registers the text of the message.
 	 * 
-	 * @param text	the text message to be displayed.
+	 * @param text
+	 *            the text message to be displayed.
 	 */
 	public void setText(String text) {
 		this.text = text;
 	}
-	
+
 	/**
 	 * String format to display the message.
 	 */

@@ -82,10 +82,10 @@ public class Manager {
 	public void connect(String nickName) throws UnknownHostException, IOException {
 		// Create communication socket.
 		socket = new Socket(HOST, PORT);
-		
+
 		// Initialize the output stream
 		output = new ObjectOutputStream(socket.getOutputStream());
-		
+
 		// Send initial "Hello message"
 		sendMessage(new Message(nickName, Message.HELLO_MSG));
 	}
@@ -101,7 +101,7 @@ public class Manager {
 	public void disconnect(String nickName) throws SocketException, IOException {
 		// Send last "Bye message"
 		sendMessage(new Message(nickName, Message.BYE_MSG));
-		
+
 		// Close network and I/O resources
 		if (output != null)
 			output.close();

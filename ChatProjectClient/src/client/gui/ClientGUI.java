@@ -27,9 +27,10 @@ import javax.swing.JTextArea;
  * @see javax.swing.JFrame
  */
 public class ClientGUI extends JFrame {
-	
+
 	/**
 	 * A unique serial version identifier.
+	 * 
 	 * @see java.io.Serializable
 	 */
 	private static final long serialVersionUID = 1L;
@@ -66,16 +67,18 @@ public class ClientGUI extends JFrame {
 	/**
 	 * Constructor that initializes the window.
 	 * 
-	 * @param nickName	user's nickname
-	 * @param manager	<code>Manager</code> class instance
+	 * @param nickName
+	 *            user's nickname
+	 * @param manager
+	 *            <code>Manager</code> class instance
 	 * @exception IOException
-	 * 				if an input/output operation is interrupted.
+	 *                if an input/output operation is interrupted.
 	 */
 	public ClientGUI(String nickName, Manager manager) {
 		// Initialize fields with received parameters.
 		this.nickName = nickName;
 		this.manager = manager;
-		
+
 		// Configure window's main features.
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		this.setResizable(false);
@@ -98,17 +101,17 @@ public class ClientGUI extends JFrame {
 		btnSend = new JButton("Send");
 		btnSend.setBounds(341, 10, 89, 23);
 		contentPane.add(btnSend);
-		
+
 		// Initialize text area to display chat messages.
 		textArea = new JTextArea();
 		textArea.setEditable(false);
 		textArea.setAutoscrolls(true);
-		
+
 		DefaultCaret caret = (DefaultCaret) textArea.getCaret();
 		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
-		
+
 		JScrollPane scroll = new JScrollPane(textArea);
-		scroll.setBounds(10, 39, 420, 179);		
+		scroll.setBounds(10, 39, 420, 179);
 		contentPane.add(scroll);
 
 		// Initialize exit button
@@ -118,44 +121,44 @@ public class ClientGUI extends JFrame {
 
 		// Send button action listener
 		btnSend.addActionListener(new ActionListener() {
-			
+
 			/**
-			 * The method get's the message and calls manager's method to send
-			 * the message. It clears the text field after sending the message.
+			 * The method get's the message and calls manager's method to send the message.
+			 * It clears the text field after sending the message.
 			 */
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				if (!textField.getText().trim().equals("")) {
-						try {
-							manager.sendMessage(new Message(CLIENT_GUI.nickName,textField.getText()));
-						} catch (SocketException e) {
-							
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+					try {
+						manager.sendMessage(new Message(CLIENT_GUI.nickName, textField.getText()));
+					} catch (SocketException e) {
+
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 					textField.setText(null);
 				}
 			}
 		});
-		
+
 		// Exit button action listener
 		btnExit.addActionListener(new ActionListener() {
-			
+
 			/**
-			 * The method calls the manager's method to disconnect the client
-			 * from the server and closes the client's window.
+			 * The method calls the manager's method to disconnect the client from the
+			 * server and closes the client's window.
 			 * 
 			 * @exception SocketException
-			 * 				if there is an error accessing the socket.
+			 *                if there is an error accessing the socket.
 			 * @exception IOException
-			 *	 			if an input/output operation is interrupted.
+			 *                if an input/output operation is interrupted.
 			 */
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				try {
 					manager.disconnect(nickName);
 				} catch (SocketException e) {
-					
+
 				} catch (IOException e) {
 					e.printStackTrace();
 				} finally {
@@ -163,20 +166,20 @@ public class ClientGUI extends JFrame {
 				}
 			}
 		});
-		
+
 		// Text fields key listener
 		textField.addKeyListener(new KeyListener() {
 
 			@Override
 			public void keyTyped(KeyEvent e) {
-				
+
 			}
 
 			@Override
 			public void keyReleased(KeyEvent e) {
-				
+
 			}
-			
+
 			/**
 			 * Sends the message if the user presses the <b>Enter</b> key.
 			 */
@@ -185,9 +188,9 @@ public class ClientGUI extends JFrame {
 				if (event.getKeyCode() == KeyEvent.VK_ENTER) {
 					if (!textField.getText().trim().equals("")) {
 						try {
-							manager.sendMessage(new Message(CLIENT_GUI.nickName,textField.getText()));
+							manager.sendMessage(new Message(CLIENT_GUI.nickName, textField.getText()));
 						} catch (SocketException e) {
-							
+
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
@@ -196,7 +199,7 @@ public class ClientGUI extends JFrame {
 				}
 			}
 		});
-		
+
 		// Call manager's method to create the client's listener thread
 		try {
 			this.manager.startCommunication(this.nickName, this.textArea, this.btnSend);

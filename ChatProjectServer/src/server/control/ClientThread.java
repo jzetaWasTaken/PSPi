@@ -76,15 +76,15 @@ public class ClientThread extends Thread {
 	 * Main execution instructions for the client thread. It reads messages from the
 	 * input stream continuously. It displays read messages in the server's text
 	 * area and send them to the rest of the users. If it reads a "Bye message", it
-	 * removes the client thread from the server's map, it resends the message to 
+	 * removes the client thread from the server's map, it resends the message to
 	 * the rest of the clients and it exits the reading loop.
 	 * 
 	 * @exception SocketException
-	 * 				if there is an error accessing the socket.
+	 *                if there is an error accessing the socket.
 	 * @exception IOException
-	 * 				if an input/output operation is interrupted.
+	 *                if an input/output operation is interrupted.
 	 * @exception ClassNotFoundException
-	 * 				if an issue raises when trying to load a class.
+	 *                if an issue raises when trying to load a class.
 	 */
 	@Override
 	public void run() {
@@ -122,13 +122,14 @@ public class ClientThread extends Thread {
 			disconnect();
 		}
 	}
-	
+
 	/**
 	 * Method that sends the message to another client.
 	 * 
-	 * @param message	message received and to be sent.
+	 * @param message
+	 *            message received and to be sent.
 	 * @exception IOException
-	 * 				if an input/output operation is interrupted.
+	 *                if an input/output operation is interrupted.
 	 */
 	public void sendMessage(Message message) {
 		try {
@@ -142,19 +143,20 @@ public class ClientThread extends Thread {
 	/**
 	 * Calls the send message for every client currently connected to the server.
 	 * 
-	 * @param message	message received and to be sent.
+	 * @param message
+	 *            message received and to be sent.
 	 */
 	public void reSendAll(Message message) {
 		for (ClientThread client : ServerThread.clients.values()) {
 			client.sendMessage(message);
 		}
 	}
-	
+
 	/**
 	 * Method to close all the I/O and network resources.
 	 * 
 	 * @exception IOException
-	 * 				if an input/output operation is interrupted.
+	 *                if an input/output operation is interrupted.
 	 */
 	public void disconnect() {
 		try {

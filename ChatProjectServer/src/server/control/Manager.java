@@ -33,7 +33,7 @@ public class Manager {
 	 * <code>disconnect()</code> method.
 	 * 
 	 * @throws IOException
-	 * 			if an input/output operation is interrupted.
+	 *             if an input/output operation is interrupted.
 	 */
 	public void disconnect() throws IOException {
 		server.disconnect();
