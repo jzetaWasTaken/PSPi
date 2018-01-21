@@ -1,10 +1,16 @@
 package server.control;
 
+import java.util.List;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.ArrayList;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+import javax.swing.DefaultListModel;
 import javax.swing.JTextArea;
 import model.Message;
 
@@ -28,11 +34,13 @@ public class ServerThread extends Thread {
 	/**
 	 * Map containing the client threads of all the connected users.
 	 */
-	static ConcurrentHashMap<String, ClientThread> clients = new ConcurrentHashMap<>();
+	public static ConcurrentSkipListMap<String, ClientThread> clients = new ConcurrentSkipListMap<>();
 	/**
 	 * Server's graphical user interface to display messages.
 	 */
 	private JTextArea textArea;
+	
+	private DefaultListModel<String> model;
 
 	/**
 	 * Constructs the server thread instance, initializes the text are attribute and
@@ -41,9 +49,10 @@ public class ServerThread extends Thread {
 	 * @param textArea
 	 *            text area of the graphical user interface.
 	 */
-	public ServerThread(JTextArea textArea) {
+	public ServerThread(JTextArea textArea, DefaultListModel<String> model) {
 		// Initialize text area attribute.
 		this.textArea = textArea;
+		this.model = model;
 		// Start running the server thread.
 		start();
 	}
@@ -71,9 +80,23 @@ public class ServerThread extends Thread {
 			while (true) {
 				// Accept the connection.
 				Socket socket = server.accept();
-
-				// Create the client thread for the newly accepted connection.
-				ClientThread client = new ClientThread(socket, textArea);
+				
+				ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
+				ObjectInputStream input = new ObjectInputStream(socket.getInputStream());
+				Message message = (Message) input.readObject();
+				
+				
+				if (!ServerThread.clients.containsKey(message.getNickName())) {
+					output.writeObject(new Message(Message.SERVER_NICK, Message.APPROVE));
+					// Create the client thread for the newly accepted connection.
+					ClientThread client = new ClientThread(socket, textArea, output, input, model);
+					List<String> keys = new ArrayList<>(ServerThread.clients.keySet());
+					int pos = keys.indexOf(message.getNickName());
+					model.add(pos, message.getNickName());
+				} else {
+					output.writeObject(new Message(Message.SERVER_NICK, Message.REJECT));
+					socket.close();
+				}
 			}
 		} catch (SocketException e) {
 			// When the server socket is closed, end program.

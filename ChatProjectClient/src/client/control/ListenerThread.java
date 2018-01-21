@@ -53,12 +53,13 @@ public class ListenerThread extends Thread {
 	 *             if there is an input/output issue when initializing the
 	 *             <code>ObjectInputStream</code>.
 	 */
-	ListenerThread(Socket socket, String nickName, JTextArea textArea, JButton btnSend) throws IOException {
+	ListenerThread(Socket socket, String nickName, JTextArea textArea, JButton btnSend, ObjectInputStream input)
+			throws IOException {
 		this.setName(nickName);
 		this.socket = socket;
 		this.textArea = textArea;
 		this.btnSend = btnSend;
-		this.input = new ObjectInputStream(socket.getInputStream());
+		this.input = input;
 		start();
 	}
 

@@ -5,6 +5,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketException;
+
+import javax.swing.DefaultListModel;
 import javax.swing.JTextArea;
 import model.Message;
 
@@ -35,6 +37,8 @@ public class ClientThread extends Thread {
 	 * Text area of the server graphical user interface to display chat messages.
 	 */
 	private JTextArea textArea;
+	
+	private DefaultListModel<String> model;
 
 	/**
 	 * Constructs the <code>ClientThread</code> class instance. It initializes the
@@ -51,22 +55,24 @@ public class ClientThread extends Thread {
 	 * @throws ClassNotFoundException
 	 *             if an issue raises when trying to load a class.
 	 */
-	public ClientThread(Socket socket, JTextArea textArea) throws IOException, ClassNotFoundException {
+	public ClientThread(Socket socket, JTextArea textArea, ObjectOutputStream ouput, ObjectInputStream input,
+			DefaultListModel<String> model) throws IOException, ClassNotFoundException {
 		// Initializes fields.
 		this.socket = socket;
 		this.textArea = textArea;
-		output = new ObjectOutputStream(this.socket.getOutputStream());
-		input = new ObjectInputStream(this.socket.getInputStream());
+		this.output = ouput;
+		this.input = input;
+		this.model = model;
 
 		// Gets the initial message and append it to the text area.
 		Message message = (Message) input.readObject();
 		textArea.append(message.toString());
 
-		// Puts a reference to itself in ServerThread's map
-		ServerThread.clients.put(message.getNickName(), this);
-
 		// Send the previously retrieved "Hello message" to all users
 		reSendAll(message);
+
+		// Puts a reference to itself in ServerThread's map
+		ServerThread.clients.put(message.getNickName(), this);
 
 		// Start the thread
 		start();
@@ -102,6 +108,7 @@ public class ClientThread extends Thread {
 						textArea.append(message.toString());
 						// Remove client thread from server map.
 						ServerThread.clients.remove(message.getNickName());
+						model.removeElement(message.getNickName());
 						// Send "Bye message" to all users.
 						reSendAll(message);
 						// Exit the reading loop.

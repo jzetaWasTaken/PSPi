@@ -1,12 +1,14 @@
 package server.gui;
 
 import javax.swing.JFrame;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.DefaultCaret;
 import server.control.Manager;
 import javax.swing.JTextArea;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import java.awt.EventQueue;
 import java.awt.event.ActionListener;
@@ -40,6 +42,13 @@ public class ServerGUI extends JFrame {
 	 * <code>Manager</code> instance.
 	 */
 	private Manager manager = new Manager();
+	
+	private JList<String> userList;
+	
+	private JButton btnKick;
+	
+	private DefaultListModel<String> model;
+	
 	/**
 	 * A reference to itself;
 	 */
@@ -71,7 +80,7 @@ public class ServerGUI extends JFrame {
 		setTitle("Server window");
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		this.setResizable(false);
-		setBounds(10, 10, 450, 300);
+		setBounds(10, 10, 650, 300);
 		JPanel contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -88,11 +97,27 @@ public class ServerGUI extends JFrame {
 		JScrollPane scroll = new JScrollPane(textArea);
 		scroll.setBounds(10, 20, 422, 190);
 		contentPane.add(scroll);
+		
+		// User list
+		model = new DefaultListModel<>();
+		
+		userList = new JList<>(model);
+		
+		JScrollPane listScrool = new JScrollPane(userList);
+		listScrool.setBounds(440, 20, 200, 190);
+		contentPane.add(listScrool);
 
 		// Exit button.
 		btnExit = new JButton("Exit");
 		btnExit.setBounds(181, 232, 89, 23);
 		contentPane.add(btnExit);
+		
+		// Kick user button
+		btnKick = new JButton("Kick");
+		btnKick.setBounds(490, 232, 89, 23);
+		btnKick.setEnabled(false);
+		contentPane.add(btnKick);
+		
 		// Exit button action listener.
 		btnExit.addActionListener(new ActionListener() {
 
@@ -111,9 +136,22 @@ public class ServerGUI extends JFrame {
 				SERVER_GUI.dispose();
 			}
 		});
+		
+		// Kick button action listener.
+		btnKick.addActionListener(new ActionListener() {
+			
+			/**
+			 * 
+			 */
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 
 		// Call manager's method to start communication. That is, to create the server's
 		// main thread.
-		this.manager.startCommunication(textArea);
+		this.manager.startCommunication(textArea, model);
 	}
 }

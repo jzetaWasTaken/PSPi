@@ -42,6 +42,9 @@ public class Message implements Serializable {
 	 * String constant for the message when connection ends.
 	 */
 	public static final String BYE_MSG = "BYE";
+	
+	public static final String APPROVE = "1";
+	public static final String REJECT = "0";
 
 	/**
 	 * Constructs a new <code>Message</code> object.

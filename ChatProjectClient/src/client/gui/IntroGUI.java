@@ -5,6 +5,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import client.control.Manager;
+import client.exceptions.NickExistsException;
+
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -32,6 +34,8 @@ public class IntroGUI extends JFrame {
 	 * @see java.io.Serializable
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	private static final String NICK_ERROR_MSG = "Nickname already exists";
 	/**
 	 * String constant for error message when the user name has not been set.
 	 */
@@ -109,7 +113,7 @@ public class IntroGUI extends JFrame {
 		// Initialize the label to display errors
 		lblError = new JLabel("");
 		lblError.setForeground(Color.RED);
-		lblError.setBounds(43, 60, 167, 14);
+		lblError.setBounds(43, 60, 190, 14);
 		contentPane.add(lblError);
 
 		// Accept button's action listener.
@@ -142,6 +146,10 @@ public class IntroGUI extends JFrame {
 						e.printStackTrace();
 					} catch (IOException e) {
 						e.printStackTrace();
+					} catch (ClassNotFoundException e) {
+						e.printStackTrace();
+					} catch (NickExistsException e) {
+						lblError.setText(NICK_ERROR_MSG);
 					}
 				} else {
 					// Display error message if no nickname has been typed.

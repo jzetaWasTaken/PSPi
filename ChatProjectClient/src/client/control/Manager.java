@@ -1,12 +1,15 @@
 package client.control;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import javax.swing.JButton;
 import javax.swing.JTextArea;
+
+import client.exceptions.NickExistsException;
 import model.Message;
 
 /**
@@ -35,6 +38,8 @@ public class Manager {
 	 * them to the server.
 	 */
 	ObjectOutputStream output = null;
+	
+	ObjectInputStream input = null;
 
 	/**
 	 * Method to create the <code>ListenerThread</code> instance for the client.
@@ -49,7 +54,7 @@ public class Manager {
 	 *             if an input/output operation is interrupted.
 	 */
 	public void startCommunication(String nickName, JTextArea textArea, JButton btnSend) throws IOException {
-		new ListenerThread(socket, nickName, textArea, btnSend);
+		new ListenerThread(socket, nickName, textArea, btnSend, input);
 	}
 
 	/**
@@ -78,16 +83,29 @@ public class Manager {
 	 *             if the IP address of the host can not be determined.
 	 * @throws IOException
 	 *             if an input/output operation is interrupted.
+	 * @throws ClassNotFoundException 
+	 * @throws NickExistsException 
+	 * 				if nickname already exists.
 	 */
-	public void connect(String nickName) throws UnknownHostException, IOException {
+	public void connect(String nickName) throws UnknownHostException, IOException, ClassNotFoundException, NickExistsException {
 		// Create communication socket.
 		socket = new Socket(HOST, PORT);
 
 		// Initialize the output stream
 		output = new ObjectOutputStream(socket.getOutputStream());
-
-		// Send initial "Hello message"
-		sendMessage(new Message(nickName, Message.HELLO_MSG));
+		input = new ObjectInputStream(socket.getInputStream());
+		sendMessage(new Message(nickName, ""));
+		
+		
+		
+		Message message = (Message) input.readObject();
+		if (message.getText().equals(Message.APPROVE)) {
+			// Send initial "Hello message"
+			sendMessage(new Message(nickName, Message.HELLO_MSG));
+		} else {
+			socket.close();
+			throw new NickExistsException();
+		}
 	}
 
 	/**

@@ -3,8 +3,8 @@ package model;
 import java.io.Serializable;
 
 /**
- * A class representing the messages to send to the client and to receive from
- * the client.
+ * A class representing the messages to send to the server and to receive from
+ * the server.
  * 
  * @author Jon Zaballa
  * @version 1.0
@@ -42,6 +42,9 @@ public class Message implements Serializable {
 	 * String constant for the message when connection ends.
 	 */
 	public static final String BYE_MSG = "BYE";
+	
+	public static final String APPROVE = "1";
+	public static final String REJECT = "0";
 
 	/**
 	 * Constructs a new <code>Message</code> object.
