@@ -39,7 +39,9 @@ public class ServerThread extends Thread {
 	 * Server's graphical user interface to display messages.
 	 */
 	private JTextArea textArea;
-	
+	/**
+	 * Model for the user list.
+	 */
 	private DefaultListModel<String> model;
 
 	/**
@@ -48,6 +50,8 @@ public class ServerThread extends Thread {
 	 * 
 	 * @param textArea
 	 *            text area of the graphical user interface.
+	 * @param model
+	 *            user list model
 	 */
 	public ServerThread(JTextArea textArea, DefaultListModel<String> model) {
 		// Initialize text area attribute.
@@ -61,40 +65,49 @@ public class ServerThread extends Thread {
 	 * <code>ServerThread</code>'s main instruction block. It creates the
 	 * <code>ServerSocket</code> instance and it listens to client connections while
 	 * the server is running.
-	 * 
-	 * @exception SocketException
-	 *                if there is an error accessing the socket.
-	 * @exception IOException
-	 *                if an input/output operation is interrupted.
-	 * @exception ClassNotFoundException
-	 *                if an issue raises when trying to load a class.
 	 */
 	@Override
 	@SuppressWarnings("unused")
 	public void run() {
+		// I/O streams.
+		ObjectOutputStream output = null;
+		ObjectInputStream input = null;
 		try {
 			// Create the server socket.
 			server = new ServerSocket(PORT);
-
+			
 			// Loop to listen to incoming connections.
 			while (true) {
 				// Accept the connection.
 				Socket socket = server.accept();
-				
-				ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
-				ObjectInputStream input = new ObjectInputStream(socket.getInputStream());
+
+				// Initialize I/O streams to check incoming connection nickname.
+				output = new ObjectOutputStream(socket.getOutputStream());
+				input = new ObjectInputStream(socket.getInputStream());
+
+				// Get initial client message to check nickname.
 				Message message = (Message) input.readObject();
-				
-				
+
+				// Check nickname.
 				if (!ServerThread.clients.containsKey(message.getNickName())) {
+					// If the nickname is valid, send approve message.
 					output.writeObject(new Message(Message.SERVER_NICK, Message.APPROVE));
+
 					// Create the client thread for the newly accepted connection.
 					ClientThread client = new ClientThread(socket, textArea, output, input, model);
+
+					// Get the position in which the new user should be added to the list according
+					// to alphabetical order.
 					List<String> clientKeys = new ArrayList<>(ServerThread.clients.keySet());
 					int pos = clientKeys.indexOf(message.getNickName());
+
+					// Add the user to the list in the given position.
 					model.add(pos, message.getNickName());
 				} else {
+					// Else send rejection message.
 					output.writeObject(new Message(Message.SERVER_NICK, Message.REJECT));
+					
+					// And close the socket.
 					socket.close();
 				}
 			}
@@ -105,13 +118,17 @@ public class ServerThread extends Thread {
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} finally {
-			// Close network resources
-			if (server != null)
-				try {
+			// Close network and I/O resources.
+			try {
+				if (server != null)
 					server.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				if (output != null)
+					output.close();
+				if (input != null)
+					input.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

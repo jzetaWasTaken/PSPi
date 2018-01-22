@@ -37,7 +37,9 @@ public class ClientThread extends Thread {
 	 * Text area of the server graphical user interface to display chat messages.
 	 */
 	private JTextArea textArea;
-	
+	/**
+	 * Graphical user interface model for the user list.
+	 */
 	private DefaultListModel<String> model;
 
 	/**
@@ -50,6 +52,12 @@ public class ClientThread extends Thread {
 	 * 
 	 * @param socket
 	 * @param textArea
+	 * @param output
+	 *            object output stream.
+	 * @param input
+	 *            object input stream.
+	 * @param model
+	 *            model for graphical user interface user list.
 	 * @throws IOException
 	 *             if an input/output operation is interrupted.
 	 * @throws ClassNotFoundException
@@ -73,9 +81,10 @@ public class ClientThread extends Thread {
 
 		// Puts a reference to itself in ServerThread's map
 		ServerThread.clients.put(message.getNickName(), this);
-		
+
+		// Set the nickname as the thread name.
 		setName(message.getNickName());
-		
+
 		// Start the thread
 		start();
 	}
@@ -86,13 +95,6 @@ public class ClientThread extends Thread {
 	 * area and send them to the rest of the users. If it reads a "Bye message", it
 	 * removes the client thread from the server's map, it resends the message to
 	 * the rest of the clients and it exits the reading loop.
-	 * 
-	 * @exception SocketException
-	 *                if there is an error accessing the socket.
-	 * @exception IOException
-	 *                if an input/output operation is interrupted.
-	 * @exception ClassNotFoundException
-	 *                if an issue raises when trying to load a class.
 	 */
 	@Override
 	public void run() {
@@ -108,6 +110,7 @@ public class ClientThread extends Thread {
 					if (message.getText().equals(Message.BYE_MSG)) {
 						// Append the "Bye message" to text area.
 						textArea.append(message.toString());
+						// Remove the client.
 						removeClient();
 						// Send "Bye message" to all users.
 						reSendAll(message);
@@ -130,6 +133,10 @@ public class ClientThread extends Thread {
 		}
 	}
 
+	/**
+	 * Remove client from the server thread clients map and from the user list
+	 * model.
+	 */
 	public void removeClient() {
 		// Remove client thread from server map.
 		ServerThread.clients.remove(getName());
@@ -142,8 +149,6 @@ public class ClientThread extends Thread {
 	 * 
 	 * @param message
 	 *            message received and to be sent.
-	 * @exception IOException
-	 *                if an input/output operation is interrupted.
 	 */
 	public void sendMessage(Message message) {
 		try {

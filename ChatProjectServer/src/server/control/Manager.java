@@ -43,14 +43,29 @@ public class Manager {
 		server.disconnect();
 	}
 
+	/**
+	 * Method to kick a user from the server.
+	 * 
+	 * @param client
+	 *            the client nickname
+	 */
 	public void kickUser(String client) {
+		// Get the client thread of the client to be kicked.
 		ClientThread clientThread = ServerThread.clients.get(client);
+		
+		// Notify client that she has been kicked.
 		clientThread.sendMessage(new Message(Message.SERVER_NICK, Message.KICK));
+		
+		// Remove the client from list and map.
 		clientThread.removeClient();
+		
+		// Notify the rest of the users.
 		StringBuffer sb = new StringBuffer();
 		sb.append(clientThread.getName());
 		sb.append(Message.KICK2);
 		clientThread.reSendAll(new Message(Message.SERVER_NICK, sb.toString()));
+		
+		// Disconnect the client.
 		clientThread.disconnect();
 	}
 }

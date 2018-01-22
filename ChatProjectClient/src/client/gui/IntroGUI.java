@@ -34,7 +34,9 @@ public class IntroGUI extends JFrame {
 	 * @see java.io.Serializable
 	 */
 	private static final long serialVersionUID = 1L;
-	
+	/**
+	 * String constant for error message when the nickname is already in use.
+	 */
 	private static final String NICK_ERROR_MSG = "Nickname already exists";
 	/**
 	 * String constant for error message when the user name has not been set.
@@ -149,6 +151,7 @@ public class IntroGUI extends JFrame {
 					} catch (ClassNotFoundException e) {
 						e.printStackTrace();
 					} catch (NickExistsException e) {
+						// Display nickname error message.
 						lblError.setText(NICK_ERROR_MSG);
 					}
 				} else {

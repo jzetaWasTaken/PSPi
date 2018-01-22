@@ -42,11 +42,24 @@ public class Message implements Serializable {
 	 * String constant for the message when connection ends.
 	 */
 	public static final String BYE_MSG = "BYE";
-	
+	/**
+	 * String constant for the message when the nickname is valid.
+	 */
 	public static final String APPROVE = "1";
+	/**
+	 * String constant for the message when the nickname is already in use.
+	 */
 	public static final String REJECT = "0";
+	/**
+	 * String constant for the message when the user has been kicked by the server
+	 * administrator.
+	 */
 	public static final String KICK = "You have been kicked from the server";
-	public static final Object KICK2 = " was kicked from the server";
+	/**
+	 * String constant for the message when another user has been kicked by the
+	 * server administrator.
+	 */
+	public static final Object KICK2 = " has been kicked from the server";
 
 	/**
 	 * Constructs a new <code>Message</code> object.

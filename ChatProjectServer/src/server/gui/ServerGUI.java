@@ -45,13 +45,18 @@ public class ServerGUI extends JFrame {
 	 * <code>Manager</code> instance.
 	 */
 	private Manager manager = new Manager();
-	
+	/**
+	 * List to display and select connected users.
+	 */
 	private JList<String> userList;
-	
+	/**
+	 * Button to kick users.
+	 */
 	private JButton btnKick;
-	
+	/**
+	 * Model for user list.
+	 */
 	private DefaultListModel<String> model;
-	
 	/**
 	 * A reference to itself;
 	 */
@@ -100,29 +105,29 @@ public class ServerGUI extends JFrame {
 		JScrollPane scroll = new JScrollPane(textArea);
 		scroll.setBounds(10, 20, 422, 190);
 		contentPane.add(scroll);
-		
+
 		// User list
 		model = new DefaultListModel<>();
-		
+
 		userList = new JList<>(model);
-		
+
 		JScrollPane listScrool = new JScrollPane(userList);
 		listScrool.setBounds(440, 20, 200, 190);
 		contentPane.add(listScrool);
-		
+
 		userList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 		// Exit button.
 		btnExit = new JButton("Exit");
 		btnExit.setBounds(181, 232, 89, 23);
 		contentPane.add(btnExit);
-		
+
 		// Kick user button
 		btnKick = new JButton("Kick");
 		btnKick.setBounds(490, 232, 89, 23);
 		btnKick.setEnabled(false);
 		contentPane.add(btnKick);
-		
+
 		// Exit button action listener.
 		btnExit.addActionListener(new ActionListener() {
 
@@ -141,22 +146,26 @@ public class ServerGUI extends JFrame {
 				SERVER_GUI.dispose();
 			}
 		});
-		
+
 		// Kick button action listener.
 		btnKick.addActionListener(new ActionListener() {
-			
+
 			/**
-			 * 
+			 * Call manager's method to kick a user.
 			 */
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				manager.kickUser(userList.getSelectedValue());
 			}
 		});
-		
+
 		// JList listener
 		userList.addListSelectionListener(new ListSelectionListener() {
-			
+
+			/**
+			 * Check if a list item is selected and enable or disable the kick button
+			 * accordingly.
+			 */
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
 				if (userList.getSelectedIndex() == -1) {

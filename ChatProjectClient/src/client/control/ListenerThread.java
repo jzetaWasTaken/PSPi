@@ -15,7 +15,6 @@ import model.Message;
  * @author Jon Zaballa
  * @version 1.0
  * @see java.lang.Thread
- *
  */
 public class ListenerThread extends Thread {
 	/**
@@ -49,17 +48,22 @@ public class ListenerThread extends Thread {
 	 *            text area from the graphical user interface.
 	 * @param btnSend
 	 *            button to send messages.
+	 * @param input
+	 *            the object input stream of the client's socket.
 	 * @throws IOException
 	 *             if there is an input/output issue when initializing the
 	 *             <code>ObjectInputStream</code>.
 	 */
 	ListenerThread(Socket socket, String nickName, JTextArea textArea, JButton btnSend, ObjectInputStream input)
 			throws IOException {
+		// Initialize attributes.
 		this.setName(nickName);
 		this.socket = socket;
 		this.textArea = textArea;
 		this.btnSend = btnSend;
 		this.input = input;
+
+		// Start thread execution
 		start();
 	}
 
@@ -67,13 +71,6 @@ public class ListenerThread extends Thread {
 	 * The main thread execution instructions. The program will read incoming
 	 * messages and append them to the text area until it receives a disconnection
 	 * message from the server or an exception is raised.
-	 * 
-	 * @exception SocketException
-	 *                if there is an error accessing the socket.
-	 * @exception IOException
-	 *                if an input/output operation is interrupted.
-	 * @exception ClassNotFoundException
-	 *                if an issue raises when trying to load a class.
 	 */
 	@Override
 	public void run() {
@@ -86,7 +83,8 @@ public class ListenerThread extends Thread {
 				// Append new message to graphical user interface text area.
 				textArea.append(message.toString());
 
-				// If server disconnects, break the reading loop to exit.
+				// If server disconnects or the user is kicked from the server, break the
+				// reading loop to exit.
 				if (message.getText().equals(Message.DISCON_MSG) || message.getText().equals(Message.KICK)) {
 					break;
 				}
@@ -98,8 +96,7 @@ public class ListenerThread extends Thread {
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} finally {
-			// If the server is disconnected or an error has occurred, disable
-			// button to send messages and close I/O resource
+			// Disable button to send messages and close I/O resource
 			btnSend.setEnabled(false);
 			try {
 				if (input != null)

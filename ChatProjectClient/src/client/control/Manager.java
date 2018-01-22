@@ -38,7 +38,9 @@ public class Manager {
 	 * them to the server.
 	 */
 	ObjectOutputStream output = null;
-	
+	/**
+	 * <code>ObjectInputStream</code> class instance to read incoming messages.
+	 */
 	ObjectInputStream input = null;
 
 	/**
@@ -83,26 +85,30 @@ public class Manager {
 	 *             if the IP address of the host can not be determined.
 	 * @throws IOException
 	 *             if an input/output operation is interrupted.
-	 * @throws ClassNotFoundException 
-	 * @throws NickExistsException 
-	 * 				if nickname already exists.
+	 * @throws ClassNotFoundException
+	 *             if an issue raises when trying to load a class.
+	 * @throws NickExistsException
+	 *             if nickname already exists.
 	 */
-	public void connect(String nickName) throws UnknownHostException, IOException, ClassNotFoundException, NickExistsException {
+	public void connect(String nickName)
+			throws UnknownHostException, IOException, ClassNotFoundException, NickExistsException {
 		// Create communication socket.
 		socket = new Socket(HOST, PORT);
 
-		// Initialize the output stream
+		// Initialize I/O streams.
 		output = new ObjectOutputStream(socket.getOutputStream());
 		input = new ObjectInputStream(socket.getInputStream());
+
+		// Send empty message for the server to check the nickname.
 		sendMessage(new Message(nickName, ""));
-		
-		
-		
+
+		// Read server's message regarding nickname validation.
 		Message message = (Message) input.readObject();
 		if (message.getText().equals(Message.APPROVE)) {
-			// Send initial "Hello message"
+			// If the nickname is valid, send initial "Hello message"
 			sendMessage(new Message(nickName, Message.HELLO_MSG));
 		} else {
+			// Else, close the socket and throw a nickname exception.
 			socket.close();
 			throw new NickExistsException();
 		}
@@ -114,7 +120,9 @@ public class Manager {
 	 * 
 	 * @param nickName
 	 * @throws SocketException
+	 *             if there is an error accessing the socket.
 	 * @throws IOException
+	 *             if an input/output operation is interrupted.
 	 */
 	public void disconnect(String nickName) throws SocketException, IOException {
 		// Send last "Bye message"
@@ -123,6 +131,8 @@ public class Manager {
 		// Close network and I/O resources
 		if (output != null)
 			output.close();
+		if (input != null)
+			input.close();
 		if (socket != null)
 			socket.close();
 	}
