@@ -5,7 +5,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketException;
-
 import javax.swing.DefaultListModel;
 import javax.swing.JTextArea;
 import model.Message;
@@ -100,28 +99,20 @@ public class ClientThread extends Thread {
 	public void run() {
 		try {
 			while (true) {
-				// Check if the input stream is null.
-				if (input == null)
-					System.out.println("Input null");
-				else {
-					// Read the message.
-					Message message = (Message) input.readObject();
-					// Check if it is a "Bye message"
-					if (message.getText().equals(Message.BYE_MSG)) {
-						// Append the "Bye message" to text area.
-						textArea.append(message.toString());
-						// Remove the client.
-						removeClient();
-						// Send "Bye message" to all users.
-						reSendAll(message);
-						// Exit the reading loop.
-						break;
-					}
-					// Send message to all users.
-					reSendAll(message);
-					// Display message in the server's user interface.
-					textArea.append(message.toString());
-				}
+				// Read the message.
+				Message message = (Message) input.readObject();
+				// Check if it is a "Bye message"
+				if (message.getText().equals(Message.BYE_MSG)) {
+					// Remove client.
+					removeClient(message);
+					
+					// Exit loop.
+					break;
+				} 
+				// Send message to all users.
+				reSendAll(message);
+				// Display message in the server's user interface.
+				textArea.append(message.toString());
 			}
 		} catch (SocketException e) {
 			// When the communication socket is closed, end program.
@@ -132,16 +123,20 @@ public class ClientThread extends Thread {
 			disconnect();
 		}
 	}
-
+	
 	/**
 	 * Remove client from the server thread clients map and from the user list
 	 * model.
 	 */
-	public void removeClient() {
+	public void removeClient(Message message) {
+		// Append the message to text area.
+		textArea.append(message.toString());
 		// Remove client thread from server map.
 		ServerThread.clients.remove(getName());
 		// Remove client from list
 		model.removeElement(getName());
+		// Send message to all users.
+		reSendAll(message);
 	}
 
 	/**

@@ -155,4 +155,18 @@ public class ServerThread extends Thread {
 		if (server != null)
 			server.close();
 	}
+
+	public void kickUser(String client) {
+		// Get the client thread of the client to be kicked.
+		ClientThread clientThread = ServerThread.clients.get(client);
+		
+		// Notify client that she has been kicked.
+		clientThread.sendMessage(new Message(Message.SERVER_NICK, Message.KICK));
+		StringBuffer sb = new StringBuffer();
+		sb.append(clientThread.getName());
+		sb.append(Message.KICK2);
+		Message message = new Message(Message.SERVER_NICK, sb.toString());
+		clientThread.removeClient(message);
+		clientThread.disconnect();
+	}
 }

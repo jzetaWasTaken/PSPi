@@ -74,6 +74,7 @@ public class ListenerThread extends Thread {
 	 */
 	@Override
 	public void run() {
+		boolean kicked = false; 
 		try {
 			// Read incoming messages while client is connected.
 			while (true) {
@@ -86,23 +87,28 @@ public class ListenerThread extends Thread {
 				// If server disconnects or the user is kicked from the server, break the
 				// reading loop to exit.
 				if (message.getText().equals(Message.DISCON_MSG) || message.getText().equals(Message.KICK)) {
+					if (message.getText().equals(Message.KICK))
+						kicked = true;
 					break;
 				}
 			}
 		} catch (SocketException e) {
-			// When the communication socket is closed, end program
+			// When the communication socket is closed, end program.
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} finally {
-			// Disable button to send messages and close I/O resource
+			// Disable button to send messages and close I/O resource.
 			btnSend.setEnabled(false);
-			try {
-				if (input != null)
-					input.close();
-			} catch (IOException e) {
-				e.printStackTrace();
+			
+			if (!kicked) {
+				try {
+					if (input != null)
+						input.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
