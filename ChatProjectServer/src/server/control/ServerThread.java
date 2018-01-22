@@ -75,7 +75,7 @@ public class ServerThread extends Thread {
 		try {
 			// Create the server socket.
 			server = new ServerSocket(PORT);
-			
+
 			// Loop to listen to incoming connections.
 			while (true) {
 				// Accept the connection.
@@ -106,7 +106,7 @@ public class ServerThread extends Thread {
 				} else {
 					// Else send rejection message.
 					output.writeObject(new Message(Message.SERVER_NICK, Message.REJECT));
-					
+
 					// And close the socket.
 					socket.close();
 				}
@@ -156,10 +156,16 @@ public class ServerThread extends Thread {
 			server.close();
 	}
 
+	/**
+	 * Method to kick user from server.
+	 * 
+	 * @param client
+	 *            the client to be removed.
+	 */
 	public void kickUser(String client) {
 		// Get the client thread of the client to be kicked.
 		ClientThread clientThread = ServerThread.clients.get(client);
-		
+
 		// Notify client that she has been kicked.
 		clientThread.sendMessage(new Message(Message.SERVER_NICK, Message.KICK));
 		StringBuffer sb = new StringBuffer();

@@ -4,7 +4,6 @@ import java.io.IOException;
 import javax.swing.DefaultListModel;
 import javax.swing.JTextArea;
 
-
 /**
  * Class representing a manager to handle the main operations between server and
  * client.
@@ -42,7 +41,8 @@ public class Manager {
 	}
 
 	/**
-	 * Method to kick a user from the server.
+	 * Method to kick a user from the server. It calls <code>ServerThread</code>'s
+	 * <code>kickUser()</code> method.
 	 * 
 	 * @param client
 	 *            the client nickname
