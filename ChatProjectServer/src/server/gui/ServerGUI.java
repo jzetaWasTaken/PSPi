@@ -5,9 +5,12 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.text.DefaultCaret;
 import server.control.Manager;
 import javax.swing.JTextArea;
+import javax.swing.ListSelectionModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import java.awt.EventQueue;
@@ -106,6 +109,8 @@ public class ServerGUI extends JFrame {
 		JScrollPane listScrool = new JScrollPane(userList);
 		listScrool.setBounds(440, 20, 200, 190);
 		contentPane.add(listScrool);
+		
+		userList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 		// Exit button.
 		btnExit = new JButton("Exit");
@@ -145,8 +150,20 @@ public class ServerGUI extends JFrame {
 			 */
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				
+				manager.kickUser(userList.getSelectedValue());
+			}
+		});
+		
+		// JList listener
+		userList.addListSelectionListener(new ListSelectionListener() {
+			
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				if (userList.getSelectedIndex() == -1) {
+					btnKick.setEnabled(false);
+				} else {
+					btnKick.setEnabled(true);
+				}
 			}
 		});
 

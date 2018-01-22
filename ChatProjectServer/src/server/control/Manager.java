@@ -5,6 +5,8 @@ import java.io.IOException;
 import javax.swing.DefaultListModel;
 import javax.swing.JTextArea;
 
+import model.Message;
+
 /**
  * Class representing a manager to handle the main operations between server and
  * client.
@@ -39,5 +41,16 @@ public class Manager {
 	 */
 	public void disconnect() throws IOException {
 		server.disconnect();
+	}
+
+	public void kickUser(String client) {
+		ClientThread clientThread = ServerThread.clients.get(client);
+		clientThread.sendMessage(new Message(Message.SERVER_NICK, Message.KICK));
+		clientThread.removeClient();
+		StringBuffer sb = new StringBuffer();
+		sb.append(clientThread.getName());
+		sb.append(Message.KICK2);
+		clientThread.reSendAll(new Message(Message.SERVER_NICK, sb.toString()));
+		clientThread.disconnect();
 	}
 }

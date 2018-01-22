@@ -34,7 +34,7 @@ public class ServerThread extends Thread {
 	/**
 	 * Map containing the client threads of all the connected users.
 	 */
-	public static ConcurrentSkipListMap<String, ClientThread> clients = new ConcurrentSkipListMap<>();
+	static ConcurrentSkipListMap<String, ClientThread> clients = new ConcurrentSkipListMap<>();
 	/**
 	 * Server's graphical user interface to display messages.
 	 */
@@ -90,8 +90,8 @@ public class ServerThread extends Thread {
 					output.writeObject(new Message(Message.SERVER_NICK, Message.APPROVE));
 					// Create the client thread for the newly accepted connection.
 					ClientThread client = new ClientThread(socket, textArea, output, input, model);
-					List<String> keys = new ArrayList<>(ServerThread.clients.keySet());
-					int pos = keys.indexOf(message.getNickName());
+					List<String> clientKeys = new ArrayList<>(ServerThread.clients.keySet());
+					int pos = clientKeys.indexOf(message.getNickName());
 					model.add(pos, message.getNickName());
 				} else {
 					output.writeObject(new Message(Message.SERVER_NICK, Message.REJECT));

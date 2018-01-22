@@ -45,6 +45,8 @@ public class Message implements Serializable {
 	
 	public static final String APPROVE = "1";
 	public static final String REJECT = "0";
+	public static final String KICK = "You have been kicked from the server";
+	public static final Object KICK2 = " was kicked from the server";
 
 	/**
 	 * Constructs a new <code>Message</code> object.

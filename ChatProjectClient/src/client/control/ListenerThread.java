@@ -87,7 +87,7 @@ public class ListenerThread extends Thread {
 				textArea.append(message.toString());
 
 				// If server disconnects, break the reading loop to exit.
-				if (message.getText().equals(Message.DISCON_MSG)) {
+				if (message.getText().equals(Message.DISCON_MSG) || message.getText().equals(Message.KICK)) {
 					break;
 				}
 			}

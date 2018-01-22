@@ -73,7 +73,9 @@ public class ClientThread extends Thread {
 
 		// Puts a reference to itself in ServerThread's map
 		ServerThread.clients.put(message.getNickName(), this);
-
+		
+		setName(message.getNickName());
+		
 		// Start the thread
 		start();
 	}
@@ -106,9 +108,7 @@ public class ClientThread extends Thread {
 					if (message.getText().equals(Message.BYE_MSG)) {
 						// Append the "Bye message" to text area.
 						textArea.append(message.toString());
-						// Remove client thread from server map.
-						ServerThread.clients.remove(message.getNickName());
-						model.removeElement(message.getNickName());
+						removeClient();
 						// Send "Bye message" to all users.
 						reSendAll(message);
 						// Exit the reading loop.
@@ -128,6 +128,13 @@ public class ClientThread extends Thread {
 			// Call disconnection method.
 			disconnect();
 		}
+	}
+
+	public void removeClient() {
+		// Remove client thread from server map.
+		ServerThread.clients.remove(getName());
+		// Remove client from list
+		model.removeElement(getName());
 	}
 
 	/**
