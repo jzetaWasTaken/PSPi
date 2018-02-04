@@ -35,8 +35,9 @@ public class VentanaClienteFTP extends JFrame implements ActionListener, MouseLi
 	private JButton btnSalir;
 	private JLabel label1;
 	private JLabel label2;
-	private JList<String> lista;
+	private JList<String> lista = new JList<String>();
 	private Manager manager = new Manager(lista);
+	private JButton btnDelete;
 
 	/**
 	 * Launch the application.
@@ -83,6 +84,7 @@ public class VentanaClienteFTP extends JFrame implements ActionListener, MouseLi
 		tUsuario.setBounds(75, 13, 86, 20);
 		contentPane.add(tUsuario);
 		tUsuario.setColumns(10);
+		tUsuario.setText("jon");
 
 		JLabel lblClave = new JLabel("Clave:");
 		lblClave.setBounds(10, 47, 74, 14);
@@ -118,19 +120,25 @@ public class VentanaClienteFTP extends JFrame implements ActionListener, MouseLi
 		tClave = new JPasswordField();
 		tClave.setBounds(75, 44, 86, 20);
 		contentPane.add(tClave);
+		tClave.setText("ubuntu");
 
-		lista = new JList<String>();
 		lista.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 		JScrollPane scrollBar = new JScrollPane(lista);
 		scrollBar.setBounds(10, 92, 270, 278);
 		contentPane.add(scrollBar);
+		
+		btnDelete = new JButton("Borrar");
+		btnDelete.setBounds(310, 199, 105, 23);
+		contentPane.add(btnDelete);
+		btnDelete.setEnabled(false);
 
 		btnConectar.addActionListener(this);
 		btnDescargar.addActionListener(this);
 		btnSubir.addActionListener(this);
 		btnSalir.addActionListener(this);
-
+		btnDelete.addActionListener(this);
+		
 		lista.addMouseListener(this);
 	}
 	
@@ -138,55 +146,101 @@ public class VentanaClienteFTP extends JFrame implements ActionListener, MouseLi
 		JButton boton = (JButton) e.getSource();
 		if (boton == btnConectar) {
 			try {
-				manager.startConnection(tUsuario.getText(), new String(tClave.getPassword()));
+				manager.startConnection(tUsuario.getText(), new String(tClave.getPassword()), tServidor.getText());
+				btnSubir.setEnabled(true);
+				label1.setText(String.format("Current directory %s", Manager.DIR_HOME));
+				label2.setText(null);
 			} catch (IOException e1) {
-				e1.printStackTrace();
-				// TODO: handle exception
+				label2.setText("I/O Error");
 			} catch (FTPLoginException e1) {
-				e1.printStackTrace();
-				// TODO: handle exception
+				label2.setText(e1.getMessage());
 			}
 			
 		} else if (boton == btnSubir) {
 			try {
-				manager.uploadFile();
+				String response = manager.uploadFile();
+				if (response == Manager.UP_SUCCESS) {
+					label1.setText("Upload OK");
+					label2.setText(null);
+				} else if (response == Manager.UP_ERROR) {
+					label1.setText(null);
+					label2.setText("Error uploading file");
+				}
 			} catch (IOException e1) {
-				e1.printStackTrace();
-				// TODO Manage error
+				label1.setText(null);
+				label2.setText("Error uploading file");
 			}
 		} else if (boton == btnDescargar) {
 			try {
-				manager.downloadFile();
+				if (manager.downloadFile()) {
+					label1.setText("Download OK");
+					label2.setText(null);
+				}
+				else {
+					label1.setText(null);
+					label2.setText("Download failed");
+				}
 			} catch (IOException e1) {
-				e1.printStackTrace();
-				// TODO Manage error
+				label1.setText(null);
+				label2.setText("Download failed");
 			}
 		} else if (boton == btnSalir) {
 			try {
 				manager.exitServer();
+				this.dispose();
 			} catch (IOException e1) {
 				e1.printStackTrace();
-				// TODO Manage error
+				label2.setText("I/O Error");
+			}
+		} else if (boton == btnDelete) {
+			try {
+				if (manager.deleteFile()) {
+					manager.fillList();
+					label1.setText("File deleted");
+					label2.setText(null);
+				} else {
+					label2.setText("Error deleting file");
+					label1.setText(null);
+				}
+			} catch (IOException e2) {
+				label2.setText("I/O Error");
+				label1.setText(null);
 			}
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void mouseClicked(MouseEvent e) {
-		JList<String> list = (JList<String>) e.getSource();
+		lista = (JList<String>) e.getSource();
 		if (e.getClickCount() == 2) {
-			int index = list.getSelectedIndex();
+			int index = lista.getSelectedIndex();
+			String selected = null;
 			if (index == 0) {
 				try {
-					manager.selectListFirstElement(list.getSelectedValue());
+					selected = lista.getSelectedValue();
+					manager.selectListFirstElement(selected);
+					btnDescargar.setEnabled(false);
+					btnDelete.setEnabled(false);
+					label1.setText(String.format("Current directory %s", lista.getModel().getElementAt(0)));
 				} catch (IOException e1) {
+					label2.setText("I/O Error");
 					e1.printStackTrace();
-					// TODO Manage error
 				}
 			} else {
 				try {
-					manager.selectListElement(list.getSelectedValue());
+					selected = lista.getSelectedValue();
+					manager.selectListElement(selected);
+					if (!selected.contains(Manager.DIR_LABEL)) {
+						label1.setText(String.format("The %s file has been selected", selected));
+						btnDescargar.setEnabled(true);
+						btnDelete.setEnabled(true);
+					} else {
+						label1.setText(String.format("Current directory %s",lista.getModel().getElementAt(0)));
+						btnDescargar.setEnabled(false);
+						btnDelete.setEnabled(false);
+					}
 				} catch (IOException e1) {
-					// TODO Auto-generated catch block
+					label2.setText("I/O Error");
 					e1.printStackTrace();
 				}
 			}

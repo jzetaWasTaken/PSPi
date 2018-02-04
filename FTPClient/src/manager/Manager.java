@@ -21,41 +21,41 @@ public class Manager {
 	private FTPClient client = new FTPClient();
 	private static final String CHOOSER_TITLE = "Select file to upload";
 	private static final String CHOOSER_APPROVE = "Upload";
-	private static final String DIR_HOME = "/home";
+	public static final String DIR_HOME = File.separator + "home";
 	private static final String FOLDER_DOWNLOAD = "./";
-	private static final String HOST_NAME = "localhost";
+	//private static final String HOST_NAME = "localhost";
 	private String dirCurrent = DIR_HOME;
-	private static final String DIR_NAME = "(DIR)";
+	public static final String DIR_LABEL = "(DIR)";
+	public static final String UP_SUCCESS = "0";
+	public static final String UP_CANCEL = "1";
+	public static final String UP_ERROR = "-1";
 	private String fileSelected = "";
 	private JList<String> list;
+	DefaultListModel<String> model = new DefaultListModel<>();
 	
 	public Manager(JList<String> list) {
 		this.list = list;
 	}
 	
-	public DefaultListModel<String> startConnection(String userName, String passw) 
+	public void startConnection(String userName, String passw, String server) 
 			throws FTPLoginException, IOException {
-		client.connect(HOST_NAME);
-		System.out.println(client.getReplyString());
-		DefaultListModel<String> fileList = null;
+		client.connect(server);
 		if (client.login(userName, passw)) {
 			client.changeWorkingDirectory(DIR_HOME);
 			fillList();
 		} else {
 			throw new FTPLoginException("Bad user name or password");
 		}
-		return fileList;
 	}
 	
-	public boolean selectListElement(String dirSelected) throws IOException {
-		boolean isDir = false;
-		if (dirSelected.contains(DIR_NAME)) {
-			changeDirectory();
-			isDir = true;
+	public void selectListElement(String dirSelected) throws IOException {
+		if (dirSelected.contains(DIR_LABEL)) {
+			client.changeWorkingDirectory(dirSelected.split(" ")[1]);
+			dirCurrent = client.printWorkingDirectory();
+			fillList();
 		} else {
-			fileSelected = dirSelected; 
+			fileSelected = dirSelected;
 		}
-		return isDir;
 	}
 	
 	public void selectListFirstElement(String dirSelected) throws IOException {
@@ -64,16 +64,16 @@ public class Manager {
 		}
 	}
 	
-	private void fillList() throws IOException {
-		list.removeAll();
+	public void fillList() throws IOException {
+		model.removeAllElements();
 		FTPFile [] files = client.listFiles();
-		DefaultListModel<String> model = new DefaultListModel<>();
+		
 		model.addElement(dirCurrent);
 		for (int i = 0; i < files.length; i++) {
 			if (!(files[i].getName()).equals(".") && !(files[i].getName()).equals("..")) {
 				String name = files[i].getName();
 				if (files[i].isDirectory()) {
-					name = DIR_NAME + " " + name;
+					name = DIR_LABEL + " " + name;
 				}
 				model.addElement(name);
 			}
@@ -88,29 +88,31 @@ public class Manager {
 		fillList();
 	}
 	
-	public void downloadFile() throws IOException {
+	public boolean downloadFile() throws IOException {
+		boolean success = false;
 		String fileToDownload = FOLDER_DOWNLOAD + fileSelected;
 		BufferedOutputStream out = null;
 		try {
 			client.setFileType(FTP.BINARY_FILE_TYPE);
 			out = new BufferedOutputStream(new FileOutputStream(fileToDownload));
-			if (client.retrieveFile(fileSelected, out)) {
-				// Successful
-			} else {
-				// Error
-			}
+			if (client.retrieveFile(fileSelected, out)) 
+				success = true;
 		} finally {
 			if (out != null)
 				out.close();
 		}
+		return success;
 	}
 	
 	public void exitServer() throws IOException {
-		client.logout();
-		client.disconnect();
+		if (client.isConnected()) {
+			client.logout();
+			client.disconnect();
+		}
 	}
 	
-	public void uploadFile() throws IOException {
+	public String uploadFile() throws IOException {
+		String response = UP_ERROR;
 		BufferedInputStream in = null;
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -119,25 +121,27 @@ public class Manager {
 		if (answer == JFileChooser.APPROVE_OPTION) {
 			File file = fileChooser.getSelectedFile();
 			String path = file.getAbsolutePath();
+			System.out.println(path);
+			System.out.println(dirCurrent);
 			String name = file.getName();
 			try {
 				client.setFileType(FTP.BINARY_FILE_TYPE);
 				in = new BufferedInputStream(new FileInputStream(path));
-				if (client.storeFile(dirCurrent, in)) {
-					// Successful
+				if (client.storeFile(dirCurrent + File.separator + name, in)) {
 					fillList();
-				} else {
-					throw new IOException();
-				}
+					response = UP_SUCCESS;
+				} 
 			} finally {
 				if (in != null)
 					in.close();
 			}
+		} else {
+			response = UP_CANCEL;
 		}
+		return response;
 	}
 	
-	public void deleteFile() throws IOException {
-		client.deleteFile(fileSelected);
-		fillList();
+	public boolean deleteFile() throws IOException {
+		return client.deleteFile(fileSelected);
 	}
 }
